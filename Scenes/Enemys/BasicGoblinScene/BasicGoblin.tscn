@@ -1,0 +1,93 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scenes/Enemys/BasicGoblinScene/BasicGoblin.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Enemys/GoblinScene/Weapon/Kneef/GoblinKneef.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Textures/v1.1 dungeon crawler 16x16 pixel pack/full spritesheet.png" type="Texture" id=3]
+[ext_resource path="res://Scenes/Enemys/BasicGoblinScene/EnemyFSM.gd" type="Script" id=4]
+
+[sub_resource type="Animation" id=1]
+resource_name = "idle"
+length = 0.8
+loop = true
+step = 0.15
+tracks/0/type = "value"
+tracks/0/path = NodePath("Body/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45, 0.6, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "walk"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Body/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 7, 8, 9, 10, 11 ]
+}
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 6.86332
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 74.0075
+
+[node name="Goblin" type="KinematicBody2D"]
+script = ExtResource( 1 )
+
+[node name="EnemyFSM" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Body"]
+texture = ExtResource( 3 )
+vframes = 2
+hframes = 6
+frame = 6
+region_enabled = true
+region_rect = Rect2( 0, 16, 96, 32 )
+
+[node name="Anim" type="AnimationPlayer" parent="."]
+anims/idle = SubResource( 1 )
+anims/walk = SubResource( 2 )
+
+[node name="AnimFX" type="AnimationPlayer" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource( 3 )
+
+[node name="Weapon" type="Position2D" parent="."]
+visible = false
+
+[node name="GoblinKneef" parent="Weapon" instance=ExtResource( 2 )]
+
+[node name="AreaZone" type="Node2D" parent="."]
+visible = false
+
+[node name="ControlZone" type="Area2D" parent="AreaZone"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaZone/ControlZone"]
+shape = SubResource( 4 )
+
+[node name="UpdatePathTimer" type="Timer" parent="."]
+wait_time = 0.3
+autostart = true
+[connection signal="body_entered" from="AreaZone/ControlZone" to="." method="_on_ControlZone_body_entered"]
+[connection signal="body_exited" from="AreaZone/ControlZone" to="." method="_on_ControlZone_body_exited"]
+[connection signal="timeout" from="UpdatePathTimer" to="." method="_on_UpdatePathTimer_timeout"]

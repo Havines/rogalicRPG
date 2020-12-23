@@ -1,0 +1,85 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Assets/Textures/v1.1 dungeon crawler 16x16 pixel pack/full spritesheet.png" type="Texture" id=1]
+[ext_resource path="res://Scenes/Person/Person.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Person/PlayerFSM/PlayerFSM.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Items/Sword/Sword.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Assets/Textures/v1.1 dungeon crawler 16x16 pixel pack/full spritesheet_normalmap.png" type="Texture" id=5]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 4.56693
+height = 0.87665
+
+[sub_resource type="Animation" id=2]
+length = 0.8
+loop = true
+step = 0.15
+tracks/0/type = "value"
+tracks/0/path = NodePath("Body/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45, 0.6, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.8
+loop = true
+step = 0.15
+tracks/0/type = "value"
+tracks/0/path = NodePath("Body/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45, 0.6, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 7, 8, 9, 10, 11 ]
+}
+
+[node name="Person" type="KinematicBody2D" groups=[
+"player",
+]]
+script = ExtResource( 2 )
+
+[node name="PlayerFSM" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Body" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Body"]
+texture = ExtResource( 1 )
+normal_map = ExtResource( 5 )
+vframes = 2
+hframes = 6
+frame = 2
+region_enabled = true
+region_rect = Rect2( 0, 80, 96, 32 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 2 )
+shape = SubResource( 1 )
+
+[node name="Anim" type="AnimationPlayer" parent="."]
+anims/idle = SubResource( 2 )
+anims/run = SubResource( 3 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 0.3, 0.3 )
+
+[node name="Weapon" type="Position2D" parent="."]
+z_index = -1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sword" parent="Weapon" instance=ExtResource( 4 )]
+[connection signal="flipped" from="." to="Weapon/Sword" method="_on_Person_flipped"]

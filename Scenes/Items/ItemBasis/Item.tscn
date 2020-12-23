@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Items/ItemBasis/ItemSwinger/ItemSwinger.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Items/ItemBasis/Item.gd" type="Script" id=3]
+
+[node name="Item" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="ItemSwinger" parent="." instance=ExtResource( 2 )]
+remote_path = NodePath("../Sprite")
+
+[node name="Sprite" type="Sprite" parent="."]
+
+[node name="RecoveryTimer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
